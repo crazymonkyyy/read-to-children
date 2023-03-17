@@ -1,0 +1,153 @@
+monkyyy@no ~/ziptest % zip -r foo.zip foo/
+  adding: foo/ (stored 0%)
+  adding: foo/1 (stored 0%)
+  adding: foo/2 (stored 0%)
+monkyyy@no ~/ziptest % mv foo.zip bar.zip
+monkyyy@no ~/ziptest % unzip bar.zip
+Archive:  bar.zip
+replace foo/1? [y]es, [n]o, [A]ll, [N]one, [r]ename: n
+foo/2 exists and is a symbolic link.
+replace foo/2? [y]es, [n]o, [A]ll, [N]one, [r]ename: n
+monkyyy@no ~/ziptest % rm foo 
+rm: cannot remove 'foo': Is a directory
+1 monkyyy@no ~/ziptest % rm -r foo
+monkyyy@no ~/ziptest % ls
+bar.zip
+monkyyy@no ~/ziptest % rm bar.zip 
+monkyyy@no ~/ziptest % ls
+monkyyy@no ~/ziptest % touch 1
+monkyyy@no ~/ziptest % ln 1 2
+monkyyy@no ~/ziptest % cat 2
+monkyyy@no ~/ziptest % ls
+1  2
+monkyyy@no ~/ziptest % zip foo.zip 1 2
+  adding: 1 (stored 0%)
+  adding: 2 (stored 0%)
+monkyyy@no ~/ziptest % ls
+1  2  foo.zip
+monkyyy@no ~/ziptest % mv foo.zip bar.zip
+monkyyy@no ~/ziptest % mkdir bar
+monkyyy@no ~/ziptest % mv bar.zip bar/bar.zip 
+monkyyy@no ~/ziptest % cd bar 
+monkyyy@no ~/ziptest/bar % unzip bar.zip 
+Archive:  bar.zip
+ extracting: 1                       
+ extracting: 2                       
+monkyyy@no ~/ziptest/bar % readlink 2
+1 monkyyy@no ~/ziptest/bar % cd ..
+monkyyy@no ~/ziptest % rm -r bar 
+monkyyy@no ~/ziptest % ls
+1  2
+monkyyy@no ~/ziptest % rm 1 2
+monkyyy@no ~/ziptest % ls
+monkyyy@no ~/ziptest % touch 1
+monkyyy@no ~/ziptest % ln -s 1 2
+monkyyy@no ~/ziptest % ls
+1  2
+monkyyy@no ~/ziptest % readlink 2
+1
+monkyyy@no ~/ziptest % zip foo.zip 1 2
+  adding: 1 (stored 0%)
+  adding: 2 (stored 0%)
+monkyyy@no ~/ziptest % mkdir bar
+monkyyy@no ~/ziptest % mv foo.zip bar/bar.zip
+monkyyy@no ~/ziptest % cd bar
+monkyyy@no ~/ziptest/bar % unzip bar.zip 
+Archive:  bar.zip
+ extracting: 1                       
+ extracting: 2                       
+monkyyy@no ~/ziptest/bar % readlink 2
+1 monkyyy@no ~/ziptest/bar % ls
+1  2  bar.zip
+monkyyy@no ~/ziptest/bar % readlink -v 2
+readlink: 2: Invalid argument
+1 monkyyy@no ~/ziptest/bar % man zip
+monkyyy@no ~/ziptest/bar % cd ..
+monkyyy@no ~/ziptest % rm -r *
+zsh: sure you want to delete all 3 files in /home/monkyyy/ziptest [yn]? y
+monkyyy@no ~/ziptest % 
+monkyyy@no ~/ziptest % ls
+monkyyy@no ~/ziptest % touch 1
+monkyyy@no ~/ziptest % ln -s 1 2
+monkyyy@no ~/ziptest % tar -chf foo.tar 1 2
+monkyyy@no ~/ziptest % mkdir bar
+monkyyy@no ~/ziptest % mv foo.tar
+mv: missing destination file operand after 'foo.tar'
+Try 'mv --help' for more information.
+1 monkyyy@no ~/ziptest % mv foo.tar bar/bar.tar
+monkyyy@no ~/ziptest % cd bar
+monkyyy@no ~/ziptest/bar % tar -xvf bar.tar 
+1
+2
+monkyyy@no ~/ziptest/bar % ls
+1  2  bar.tar
+monkyyy@no ~/ziptest/bar % readlink 2
+1 monkyyy@no ~/ziptest/bar % readlink -v 2
+readlink: 2: Invalid argument
+1 monkyyy@no ~/ziptest/bar % cd ..
+monkyyy@no ~/ziptest % readlink 2
+1
+monkyyy@no ~/ziptest % tar -chf foo.tar -h 1 2
+monkyyy@no ~/ziptest % mv foo.tar bar/bar.tar
+monkyyy@no ~/ziptest % ls
+1  2  bar
+monkyyy@no ~/ziptest % cd bar
+monkyyy@no ~/ziptest/bar % rm 1 2                 
+monkyyy@no ~/ziptest/bar % ls
+bar.tar
+monkyyy@no ~/ziptest/bar % tar -xvf bar.tar       
+1
+2
+monkyyy@no ~/ziptest/bar % rm 1 2
+monkyyy@no ~/ziptest/bar % cd ..                  
+monkyyy@no ~/ziptest % man tar               
+monkyyy@no ~/ziptest % rm -r *
+zsh: sure you want to delete all 3 files in /home/monkyyy/ziptest [yn]? n
+1 monkyyy@no ~/ziptest % rm -r *
+zsh: sure you want to delete all 3 files in /home/monkyyy/ziptest [yn]? y
+monkyyy@no ~/ziptest % 
+monkyyy@no ~/ziptest % ls
+monkyyy@no ~/ziptest % mkdir foo
+monkyyy@no ~/ziptest % cd foo
+monkyyy@no ~/ziptest/foo % touch 1
+monkyyy@no ~/ziptest/foo % ln -s 1 2
+monkyyy@no ~/ziptest/foo % cd ..
+monkyyy@no ~/ziptest % tar -cvf foo.tar /foo
+tar: Removing leading `/' from member names
+tar: /foo: Cannot stat: No such file or directory
+tar: Exiting with failure status due to previous errors
+2 monkyyy@no ~/ziptest % ls
+foo  foo.tar
+monkyyy@no ~/ziptest % rm -r *
+zsh: sure you want to delete all 2 files in /home/monkyyy/ziptest [yn]? y
+monkyyy@no ~/ziptest % 
+monkyyy@no ~/ziptest % mkdir foo
+monkyyy@no ~/ziptest % touch foo/1
+monkyyy@no ~/ziptest % ln -s foo/1 foo/2
+monkyyy@no ~/ziptest % readlink foo/2 
+foo/1
+monkyyy@no ~/ziptest % man gzip
+monkyyy@no ~/ziptest % gzip foo 
+gzip: foo is a directory -- ignored
+2 monkyyy@no ~/ziptest % gzip foo/*
+gzip: foo/2: Too many levels of symbolic links
+1 monkyyy@no ~/ziptest % ls
+foo
+monkyyy@no ~/ziptest % tar foo   
+tar: Old option 'f' requires an argument.
+Try 'tar --help' or 'tar --usage' for more information.
+2 monkyyy@no ~/ziptest % tar -c foo
+tar: Refusing to write archive contents to terminal (missing -f option?)
+tar: Error is not recoverable: exiting now
+2 monkyyy@no ~/ziptest % tar -cf foo.tar foo/
+monkyyy@no ~/ziptest % mkdir bar
+monkyyy@no ~/ziptest % mv foo.tar bar/foo.tar
+monkyyy@no ~/ziptest % cd bar
+monkyyy@no ~/ziptest/bar % tar -xf foo.tar 
+monkyyy@no ~/ziptest/bar % ls
+foo  foo.tar
+monkyyy@no ~/ziptest/bar % readlink foo/2
+foo/1
+monkyyy@no ~/ziptest/bar % 
+
+
