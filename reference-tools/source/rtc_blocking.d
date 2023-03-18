@@ -13,7 +13,7 @@ void main(string[] s_){
 			GetMonitorHeight(GetCurrentMonitor)/8);
 	//--- reasonable tool gui initualization
 	SetTargetFPS(60);
-	string[] text;//main data
+	dstring[] text;//main data
 	int line,chr;//postion in document
 	int selectedtop,selectedbot;// copy and paste selection
 	string message;//status message
@@ -47,7 +47,7 @@ void main(string[] s_){
 	}
 	//---
 	foreach(s;File(s_[1]).byLine){
-		text~=s.dup;//load in text
+		text~=s.to!dstring;//load in text
 	}
 	if(text.length==0){
 		text~="";
@@ -55,10 +55,11 @@ void main(string[] s_){
 	//save;
 	while (!WindowShouldClose()){
 		BeginDrawing();
+			import stringprocessing;
 			ClearBackground(Colors.BLACK);
 			//----
 			int y=GetScreenHeight/2-(textsize/2);//drawing location
-			if(MeasureText(text[line].toStringz,textsize)<GetScreenWidth){
+			if(MeasureText(text[line].toascii.toStringz,textsize)<GetScreenWidth){
 				DrawText(text[line].toStringz,0,y,textsize,Colors.WHITE);
 				int x=MeasureText(text[line][0..chr].toStringz,textsize);
 				DrawRectangle(x,y,3,textsize,Colors.GRAY);
