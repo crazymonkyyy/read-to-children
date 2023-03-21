@@ -21,6 +21,7 @@ auto processtext(dstring s){
 		long i,j;
 		alias sumtype=SumType!(string,dchar);
 		sumtype front(){
+			//writeln(s[i..j],",",i,",",j);
 			if(isunicode){
 				return sumtype(s[i..j].to!dchar);
 			} else {
@@ -35,10 +36,12 @@ auto processtext(dstring s){
 				//j=s[i..$].countUntil!(a=>!a.isascii);
 			} else {//if(isunicode)
 				if(s[j].isascii){
-					j=s[i..$].countUntil!(a=>!a.isascii)+i;
+					j=s[i..$].countUntil!(a=>!a.isascii);
+					if(j==-1){j=s.length;}
+					else{j+=i;}
 					isunicode=false;
 				} else {
-					j++;
+					j=i+1;
 			}}
 		}
 		auto pop(){

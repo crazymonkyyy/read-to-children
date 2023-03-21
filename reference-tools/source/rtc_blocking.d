@@ -56,24 +56,49 @@ void main(string[] s_){
 	while (!WindowShouldClose()){
 		BeginDrawing();
 			import stringprocessing;
+			import unicodeenums;
+			import std.sumtype;
 			ClearBackground(Colors.BLACK);
 			//----
 			int y=GetScreenHeight/2-(textsize/2);//drawing location
-			if(MeasureText(text[line].toascii.toStringz,textsize)<GetScreenWidth){
-				DrawText(text[line].toStringz,0,y,textsize,Colors.WHITE);
-				int x=MeasureText(text[line][0..chr].toStringz,textsize);
-				DrawRectangle(x,y,3,textsize,Colors.GRAY);
-			} else {
-				//sadness path
+			int x;
+			int c=chr;//abused copy of chr
+			foreach(w;processtext(text[line])){
+			w.match!(
+				(dchar a){
+					if(c==0){DrawRectangle(x,y,3,textsize,Colors.GRAY);}
+					c--;
+					if(a==shy){
+						DrawRectangle(x,y,MeasureText("-",textsize),textsize,Colors.BLUE);
+						DrawText("-",x,y,textsize,Colors.WHITE);
+						x+=MeasureText("-",textsize);
+					}
+					if(a==nbsp){
+						DrawRectangle(x,y,MeasureText(" ",textsize),textsize,Colors.RED);
+						x+=MeasureText(" ",textsize);
+					}
+				},
+				(string a){
+					if(a.length>c){
+						int x_=MeasureText(a[0..c].toStringz,textsize);
+						DrawRectangle(x+x_,y,3,textsize,Colors.GRAY);
+					}
+					c-=a.length;
+					if(MeasureText(a.toStringz,textsize)+x>GetScreenWidth){
+						//sadness
+					}
+					DrawText(a.toStringz,x,y,textsize,Colors.WHITE);
+					x+=MeasureText(a.toStringz,textsize);
+				});
 			}
 			foreach(i;line+1..text.length){//draw lines under selection
 				y+=textsize+linespaceing;
-				DrawText(text[i].toStringz,0,y,textsize,Colors.WHITE);
+				DrawText(text[i].toascii.toStringz,0,y,textsize,Colors.WHITE);
 			}
 			y=GetScreenHeight/2-(textsize/2);
 			foreach_reverse(i;0..line){//draw lines above
 				y-=textsize+linespaceing;
-				DrawText(text[i].toStringz,0,y,textsize,Colors.WHITE);
+				DrawText(text[i].toascii.toStringz,0,y,textsize,Colors.WHITE);
 			}
 			
 			if(statusstickyness>0){
@@ -108,17 +133,33 @@ void main(string[] s_){
 			if(ctrl+s){
 				save;
 			}
+			if(alt+space||Ralt+space){
+				"hi".writeln;
+				if(text[line][chr]==' '){
+					text[line]=text[line][0..chr]~nbsp~text[line][chr+1..$];
+				} else {
+					text[line]=text[line][0..chr]~nbsp~text[line][chr..$];
+				}
+			}
+			if(alt+minus||Ralt+minus){
+				"hi".writeln;
+				text[line]=text[line][0..chr]~shy~text[line][chr..$];
+			}
+			if(minus){
+				"-".writeln;
+			}
 			if(ctrl+c){
 				text[selectedtop..selectedtop+1]
 					.join('\n')
+					.to!string
 					.toStringz
 					.SetClipboardText;
 				message="copied";
 				statusstickyness=30;
 			}
 			if(ctrl+v){
-				string temp=GetClipboardText.to!string;
-				string[] temp2=temp.splitter('\n').array;
+				dstring temp=GetClipboardText.to!dstring;
+				dstring[] temp2=temp.splitter('\n').array;
 				text=text[0..line]~temp2~text[line..$];
 			}
 			}

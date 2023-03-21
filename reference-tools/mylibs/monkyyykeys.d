@@ -79,5 +79,9 @@ enum button{
 	left,down,up,
 	enter=button_(KeyboardKey.KEY_ENTER),
 	tab,backspace,insert,delete_,
+	space=button_(KeyboardKey.KEY_SPACE),
+	apostrophe=button_(KeyboardKey.KEY_APOSTROPHE),
+	comma=button_(KeyboardKey.KEY_COMMA),
+	minus,period,slash
 }
 //todo all keys, but not by me
