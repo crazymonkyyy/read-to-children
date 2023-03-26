@@ -22,9 +22,48 @@ End-lines SHOULD be used liberally to help with consistent rendering, playback c
 
 ####Timings 
 
-In a file named ".time" there should be a collection of 32-bit ints that represent the number of frames till the start of when the word is spoken.
+In a file named ".time" there should be a collection of 32-bit ints that represent the number of frames till the start of when the word is spoken. // todo reverse engineer endianness
 
-//todo make demo and convert it to ansi c
+X86 clients MAY reinterpretive cast //todo find a spellchecker that has that word
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
+int* read(char* where) {
+    FILE *fp;
+    int *out_, temp;
+    int count = 0;
+    fp = fopen(where, "rb");
+    if (fp == NULL) {
+        perror("Error opening file");
+        exit(1);
+    }
+    while (fread(&temp, sizeof(int), 1, fp)) {
+        out_ = (int*) realloc(out_, (++count) * sizeof(int));
+        out_[count-1] = temp;
+    }
+    out_ = (int*) realloc(out_, (++count) * sizeof(int));
+    out_[count-1] = INT_MAX;
+    fclose(fp);
+    return out_;
+}
+
+int main() {
+    int *out = read("test");
+    for (int i = 0; out[i] != INT_MAX; i++) {
+        printf("%d\n", out[i]);
+    }
+    free(out);
+    return 0;
+}
+
+```
+
+//todo make an editing pass on this code
+
+
 
 #### Images
 
